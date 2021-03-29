@@ -31,12 +31,4 @@ public class EuroraTestConfiguration {
     return Clock.systemDefaultZone();
   }
 
-  public Path getZipFolder() {
-    return Paths.get(zipDirectoryPath);
-  }
-
-  public Path getUnzipFolder() {
-    return Paths.get(unzipDirectoryPath);
-  }
-
 }
