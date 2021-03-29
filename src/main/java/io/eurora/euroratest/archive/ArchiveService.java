@@ -2,6 +2,7 @@ package io.eurora.euroratest.archive;
 
 import io.eurora.euroratest.EuroraTestConfiguration;
 import io.eurora.euroratest.EuroraTestException;
+import io.eurora.euroratest.PathService;
 import io.eurora.euroratest.report.ReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class ArchiveService {
   private final ExecutorService taskExecutor;
   private final ReportService reportService;
   private final EuroraTestConfiguration config;
+  private final PathService pathService;
 
   public void zip(int fileCount) {
     IntStream.range(0, fileCount).forEach(i -> {
@@ -37,7 +39,7 @@ public class ArchiveService {
         String filename = "file_" + i;
         zipOutputStream = makeZipOutputStream(filename);
         zipService.createArchive(zipOutputStream, filename);
-      }
+        zipOutputStream.close();      }
       catch (Exception e) {
         log.error("Error {} composing file {}", e.getMessage(), i);
       }
@@ -46,7 +48,7 @@ public class ArchiveService {
 
   public void unzipAll() throws EuroraTestException {
     try {
-      Path unzipFolder = Paths.get(config.getUnzipDirectoryPath());
+      Path unzipFolder = pathService.getUnzipFolder();
       filePool.loadPool(unzipFolder);
       reportService.updatePoolFiles(filePool.getSize());
 
@@ -64,7 +66,7 @@ public class ArchiveService {
   }
 
   private ZipOutputStream makeZipOutputStream(String filename) throws IOException {
-    Path zipFolder = Paths.get(config.getZipDirectoryPath());
+    Path zipFolder = pathService.getZipFolder();
     File file = new File(zipFolder.toFile(), filename + ".zip");
     System.out.println("File is " + file.getAbsolutePath());
 

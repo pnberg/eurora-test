@@ -38,7 +38,7 @@ public class EuroraTestController {
             reportService.startReport();
             archiveService.unzipAll();
             UnzipReport report = reportService.finishReport();
-            return ResponseEntity.ok().body("Zip files extracted: " + report.toString());
+            return ResponseEntity.ok().body("Zip files extracted: " + report);
         }
         catch (EuroraTestException e) {
             return ResponseEntity.ok()

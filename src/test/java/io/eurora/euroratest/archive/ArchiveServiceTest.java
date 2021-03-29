@@ -2,6 +2,7 @@ package io.eurora.euroratest.archive;
 
 import io.eurora.euroratest.EuroraTestConfiguration;
 import io.eurora.euroratest.EuroraTestException;
+import io.eurora.euroratest.PathService;
 import io.eurora.euroratest.report.ReportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,6 +41,7 @@ class ArchiveServiceTest {
   @Mock private ExecutorService taskExecutor;
   @Mock private ReportService reportService;
   @Mock private EuroraTestConfiguration config;
+  @Mock private PathService pathService;
 
   @Captor private ArgumentCaptor<Runnable> taskCaptor;
   @Captor private ArgumentCaptor<String> nameCaptor;
@@ -51,7 +53,7 @@ class ArchiveServiceTest {
     zipFolder.resolve("/tmp/zip");
     unzipFolder.resolve("/tmp/unzip");
     archiveService =
-        new ArchiveService(zipService, unzipService, filePool, taskExecutor, reportService, config);
+        new ArchiveService(zipService, unzipService, filePool, taskExecutor, reportService, config, pathService);
   }
 
   @Test
@@ -81,7 +83,7 @@ class ArchiveServiceTest {
                "execute expected instances of UnzipTask and shutdown taskpool")
   void unzipAll() throws EuroraTestException {
     // given
-    givenZipFolder();
+    givenUnzipFolder();
     given(config.getDefaultThreadCount()).willReturn(DEFAULT_THREAD_COUNT);
 
     // when
@@ -89,7 +91,7 @@ class ArchiveServiceTest {
 
     // then
     InOrder unzipOrder = inOrder(filePool, taskExecutor);
-    then(filePool).should(unzipOrder).loadPool(Paths.get(config.getZipDirectoryPath()));
+    then(filePool).should(unzipOrder).loadPool(any(Path.class));
 
     then(taskExecutor).should(unzipOrder, times(DEFAULT_THREAD_COUNT))
         .execute(taskCaptor.capture());
@@ -99,7 +101,11 @@ class ArchiveServiceTest {
   }
 
   private void givenZipFolder() {
-    given(config.getZipDirectoryPath()).willReturn("/tmp/zip");
+    given(pathService.getZipFolder()).willReturn(zipFolder);
+  }
+
+  private void givenUnzipFolder() {
+    given(pathService.getUnzipFolder()).willReturn(unzipFolder);
   }
 
 }
