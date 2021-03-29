@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class EuroraTestConfiguration {
 
-  private String zipDirectoryPath;
-  private String unzipDirectoryPath;
+  @Getter private String zipDirectoryPath;
+  @Getter private String unzipDirectoryPath;
   @Getter private int defaultFileCount;
   @Getter private int defaultThreadCount;
 
