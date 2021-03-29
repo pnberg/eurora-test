@@ -4,6 +4,7 @@ import io.eurora.euroratest.EuroraTestConfiguration;
 import io.eurora.euroratest.report.ReportService;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Paths;
 import java.util.zip.ZipInputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ public class UnzipTask implements Runnable {
 
   @Override
   public void run() {
-    File unzipFolder = config.getUnzipFolder().toFile();
+    File unzipFolder = Paths.get(config.getUnzipDirectoryPath()).toFile();
     File zipFile;
     while ((zipFile = pool.getNextFile()) != null) {
       try (ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile))) {

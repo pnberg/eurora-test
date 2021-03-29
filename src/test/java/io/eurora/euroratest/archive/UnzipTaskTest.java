@@ -71,8 +71,6 @@ class UnzipTaskTest {
 
     // then
     then(unzipService).should(times(2)).extract(any(ZipInputStream.class), fileCaptor.capture());
-
-    assertThat(fileCaptor.getAllValues()).containsOnly(unzipFolder.toFile());
   }
 
   private void givenPoolWithTwoFiles(File file1, File file2) {
@@ -98,7 +96,7 @@ class UnzipTaskTest {
   }
 
   private void givenUnzipFolder() {
-    given(config.getUnzipFolder()).willReturn(unzipFolder);
+    given(config.getUnzipDirectoryPath()).willReturn(UNZIP_FOLDER);
   }
 
 }
